@@ -12,12 +12,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/makeitworkpress/wp-updater.git",
-                "reference": "91ad30c86fd219320ac4612149e7842cecafb544"
+                "reference": "753b04a6a6b03a90dd8a2a63c982068875168256"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/makeitworkpress/wp-updater/zipball/91ad30c86fd219320ac4612149e7842cecafb544",
-                "reference": "91ad30c86fd219320ac4612149e7842cecafb544",
+                "url": "https://api.github.com/repos/makeitworkpress/wp-updater/zipball/753b04a6a6b03a90dd8a2a63c982068875168256",
+                "reference": "753b04a6a6b03a90dd8a2a63c982068875168256",
                 "shasum": ""
             },
             "require": {
@@ -45,7 +45,7 @@
                 "source": "https://github.com/makeitworkpress/wp-updater/tree/master",
                 "issues": "https://github.com/makeitworkpress/wp-updater/issues"
             },
-            "time": "2019-11-14T11:29:42+00:00"
+            "time": "2019-11-14T11:34:20+00:00"
         }
     ],
     "packages-dev": [],
