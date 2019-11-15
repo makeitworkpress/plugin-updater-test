@@ -6,18 +6,18 @@
         "source": {
             "type": "git",
             "url": "https://github.com/makeitworkpress/wp-updater.git",
-            "reference": "753b04a6a6b03a90dd8a2a63c982068875168256"
+            "reference": "604cb97ca077e7267e4ff4462fa0e1fc579b8498"
         },
         "dist": {
             "type": "zip",
-            "url": "https://api.github.com/repos/makeitworkpress/wp-updater/zipball/753b04a6a6b03a90dd8a2a63c982068875168256",
-            "reference": "753b04a6a6b03a90dd8a2a63c982068875168256",
+            "url": "https://api.github.com/repos/makeitworkpress/wp-updater/zipball/604cb97ca077e7267e4ff4462fa0e1fc579b8498",
+            "reference": "604cb97ca077e7267e4ff4462fa0e1fc579b8498",
             "shasum": ""
         },
         "require": {
             "php": ">=5.3"
         },
-        "time": "2019-11-14T11:34:20+00:00",
+        "time": "2019-11-15T15:50:25+00:00",
         "type": "library",
         "installation-source": "dist",
         "autoload": {
