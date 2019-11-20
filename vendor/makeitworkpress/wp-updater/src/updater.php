@@ -11,36 +11,31 @@ defined( 'ABSPATH' ) or die( 'Go eat veggies!' );
 abstract class Updater {
     
     /**
-     * Contains our updater configurations, as inherited from the loader
-     *
+     * Contains our updater configurations, as inherited from the bootloader
      * @access private
      */
     private $config;      
     
     /**
      * Contains optional parameters for the request to the remove source
-     *
      * @access private
      */
     private $platform;
     
     /**
      * Contains the slug for the theme or plugin. Should be set by the child class.
-     *
-     * @access protected
+     * @access public
      */
-    protected $slug;     
+    public $slug;     
     
     /**
      * Contains the source of the theme or plugin where the api request is made to.
-     *
      * @access protected
      */
     private $source;  
     
     /**
      * Contains the current version of the theme or plugin. Should be set by the child class.
-     *
      * @access protected
      */
     protected $version;
