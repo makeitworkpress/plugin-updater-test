@@ -46,9 +46,6 @@ class Boot {
             'type'      => 'theme',                     // The type to update, either theme or plugin
             'verifySSL' => true
         ];
-
-        // Variable to save the respective updater object so we can access the slug in our source formatting filter
-        $updater  = '';
         
         $this->config = wp_parse_args( $params, $defaults );
         
@@ -125,12 +122,12 @@ class Boot {
         if( isset($source, $remote_source) ) {
 
             // Retrieves the source for themes
-            if( $this->config['type'] == 'theme' && isset($upgrader->skin->theme_info->stylesheet) && $upgrader->skin->theme_info->stylesheet == $this->updater->slug ) {
+            if( isset($upgrader->skin->theme_info->stylesheet) && $upgrader->skin->theme_info->stylesheet ) {
                 $correctSource = trailingslashit( $remote_source . '/' . $upgrader->skin->theme_info->stylesheet );
             }
 
             // Retrieves for plugins
-            if( $this->config['type'] == 'plugin' && isset($hook_extra['plugin']) && $hook_extra['plugin'] == $this->updater->slug ) {
+            if( isset($hook_extra['plugin']) && $hook_extra['plugin'] ) {
                 $correctSource = trailingslashit( $remote_source ) . dirname( $hook_extra['plugin'] );
             } 
 

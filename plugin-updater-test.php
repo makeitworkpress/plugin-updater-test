@@ -3,7 +3,7 @@
  * Plugin Name:  Plugin Updater Test
  * Plugin URI:   https://www.makeitwork.press/
  * Description:  WordPress Plugin used to test the updater script.
- * Version:      0.4
+ * Version:      0.5
  * Author:       Make it WorkPress
  * Author URI:   https://www.makeitwork.press/
  * License:      GPL3
