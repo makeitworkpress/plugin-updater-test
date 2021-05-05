@@ -3,7 +3,7 @@
  * Plugin Name:  Plugin Updater Test
  * Plugin URI:   https://www.makeitwork.press/
  * Description:  WordPress Plugin used to test the updater script.
- * Version:      0.5
+ * Version:      1.0
  * Author:       Make it WorkPress
  * Author URI:   https://www.makeitwork.press/
  * License:      GPL3
@@ -15,25 +15,33 @@
 /**
  * Set-up our autoloader from composer
  */
-spl_autoload_register( function($classname) {
-
-    $class      = str_replace( '\\', DIRECTORY_SEPARATOR, str_replace( '_', '-', strtolower($classname) ) );
-    $vendor     = str_replace( 'makeitworkpress' . DIRECTORY_SEPARATOR, '', $class );
-    $vendor     = 'makeitworkpress' . DIRECTORY_SEPARATOR . preg_replace( '/\//', '/src/', $vendor, 1 ); // Replace the first slash for the src folder
-    $vendors    = dirname(__FILE__) .  DIRECTORY_SEPARATOR . 'vendor' . DIRECTORY_SEPARATOR . $vendor . '.php';
+spl_autoload_register( function($className) {
     
-    if ( file_exists( $vendors) ) {
-        include_once $vendors;
+    $calledClass    = str_replace( '\\', DIRECTORY_SEPARATOR, str_replace( '_', '-', strtolower($className) ) );
+    $parentDir      = dirname(__FILE__) . DIRECTORY_SEPARATOR;
+    
+    // Require main parent classes
+    $parentClass    = $parentDir . 'classes' . DIRECTORY_SEPARATOR . $calledClass . '.php';
+
+    if( file_exists($parentClass) ) {
+        require_once( $parentClass );
+        return;
+    } 
+    
+    // Require Vendor (composer) classes
+    $classNames     = explode(DIRECTORY_SEPARATOR, $calledClass);
+    array_splice($classNames, 2, 0, 'src');
+
+    $vendorClass    = $parentDir . 'vendor' . DIRECTORY_SEPARATOR . implode(DIRECTORY_SEPARATOR, $classNames) . '.php';
+
+    if( file_exists($vendorClass) ) {
+        require_once( $vendorClass );    
     }
-
+   
 } );
-
 
 /**
  * Set-up the updater
  */
-new MakeitWorkPress\WP_Updater\Boot([
-    'request'       =>  [],
-    'source'        => 'https://github.com/makeitworkpress/plugin-updater-test',
-    'type'          => 'plugin'
-]);
+$updater = MakeitWorkPress\WP_Updater\Boot::instance();
+new MakeitWorkPress\WP_Updater\Boot(['source' => 'https://github.com/makeitworkpress/plugin-updater-test', 'type' => 'plugin']);
