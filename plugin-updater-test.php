@@ -44,4 +44,4 @@ spl_autoload_register( function($className) {
  * Set-up the updater
  */
 $updater = MakeitWorkPress\WP_Updater\Boot::instance();
-new MakeitWorkPress\WP_Updater\Boot(['source' => 'https://github.com/makeitworkpress/plugin-updater-test', 'type' => 'plugin']);
+$updater->add(['source' => 'https://github.com/makeitworkpress/plugin-updater-test', 'type' => 'plugin']);
