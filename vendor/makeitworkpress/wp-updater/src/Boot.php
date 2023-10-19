@@ -4,6 +4,8 @@
  */
 namespace MakeitWorkPress\WP_Updater;
 use WP_Error as WP_Error;
+use Plugin_Upgrader as Plugin_Upgrader;
+use Theme_Upgrader as Theme_Upgrader;
 use MakeitWorkPress\WP_Updater\Theme_Updater as Theme_Updater;
 use MakeitWorkPress\WP_Updater\Plugin_Updater as Plugin_Updater;
 
@@ -16,6 +18,12 @@ class Boot {
      * @access private
      */
     static private $instance = null;
+
+    /**
+     * Holds the remote source
+     * @access private
+     */
+    private $remote_source = null;    
     
     /**
      * Contains the updaters for the registered themes and plugins
@@ -49,12 +57,12 @@ class Boot {
         /**
          * SSL is verified by default, only supports safe updates
          */
-        add_filter( 'http_request_args', [$this, 'verifySSL'], 10, 2 );
+        add_filter( 'http_request_args', [$this, 'verify_SSL'], 10, 2 );
                       
         /** 
          * Renames the source during upgrading, so it fits the structure from WordPress
          */
-        add_filter( 'upgrader_source_selection', [$this, 'sourceSelection'] , 10, 4 );
+        add_filter( 'upgrader_source_selection', [$this, 'source_selection'] , 10, 4 );
         
     }
 
@@ -78,7 +86,9 @@ class Boot {
         if( is_wp_error($check) ) {
             echo $check->get_error_message();
             return;
-        }        
+        }     
+        
+        $this->remote_source = $config['source'];
 
         // Runs the scripts for updating a theme
         if( $config['type'] == 'theme' ) {
@@ -99,7 +109,7 @@ class Boot {
      * @param String $url  The url for the request
      * @return Array $args The modified arguments
      */
-    public function verifySSL( $args, $url ) {
+    public function verify_SSL( $args, $url ) {
         $args[ 'sslverify' ] = true;
         return $args;
     }
@@ -113,35 +123,41 @@ class Boot {
      * @param array     $hook_extra     The extra hook
      * @return string   $source         The source
      */
-    public function sourceSelection( $source, $remote_source = NULL, $upgrader = NULL, $hook_extra = NULL ) {
+    public function source_selection( $source, $remote_source = NULL, $upgrader = NULL, $hook_extra = NULL ) {
 
-        if( isset($source, $remote_source) ) {
-
-            // Retrieves the source for themes
-            if( isset($upgrader->skin->theme_info->stylesheet) && $upgrader->skin->theme_info->stylesheet ) {
-                $correctSource = trailingslashit( $remote_source . '/' . $upgrader->skin->theme_info->stylesheet );
-            }
-
-            // Retrieves for plugins
-            if( isset($hook_extra['plugin']) && $hook_extra['plugin'] ) {
-                $correctSource = trailingslashit( $remote_source ) . dirname( $hook_extra['plugin'] );
-            } 
-
+        if( ! isset($source, $remote_source) ) {
+            return $source;
         }
-        
-        // We have an adjusted source
-        if( isset($correctSource) ) {
-                
-            if( rename($source, $correctSource) ) {
-                return $correctSource;
-            } else {
-                $upgrader->skin->feedback( __("Unable to rename downloaded theme or plugin.", "wp-updater") );
-                return new WP_Error();
+
+        // Renames sources for custom plugins
+        if( $upgrader instanceof Plugin_Upgrader ) {
+            $slug = explode('/', plugin_basename( __FILE__ ) )[0];
+
+            // We're updating an internal plugin, so return the original source
+            if( $slug !== dirname($hook_extra['plugin']) ) {
+                return $source;    
             }
 
-        }         
+            $correct_source = trailingslashit( $remote_source ) . dirname( $hook_extra['plugin'] );
+            
+        }             
+
+         // Renames sources for themes
+        if( $upgrader instanceof Theme_Upgrader ) {
+            $correct_source = trailingslashit( $remote_source . '/' . $hook_extra['theme'] );
+        } 
         
-        return $source;
+        if( ! isset($correct_source) ) {
+            return $source;
+        }
+
+        // We have an adjusted source       
+        if( rename($source, $correct_source) ) {
+            return trailingslashit( $correct_source );
+        } else {
+            $upgrader->skin->feedback( __("Unable to rename downloaded theme or plugin.", "wp-updater") );
+            return new WP_Error();
+        }
 
     }
     
